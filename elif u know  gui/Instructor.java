@@ -95,7 +95,6 @@ public class Instructor extends User {
         }
     }
  
-
     public void createQuiz(Scanner input, ArrayList<Quiz> quizzes) {
         System.out.println("\n--- Create New Quiz ---");
         System.out.print("Topic: ");
