@@ -1,4 +1,3 @@
-
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
@@ -17,62 +16,58 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
- 
 
 public class QuizApp extends JFrame {
- 
-    static final Color BG    = new Color(0xFFF7FB);
-    static final Color INK   = new Color(0x4B4560);
-    static final Color SOFT  = new Color(0x8B84A0);
-    static final Color PINK  = new Color(0xFFC8DD);
+
+    static final Color BG = new Color(0xFFF7FB);
+    static final Color INK = new Color(0x4B4560);
+    static final Color SOFT = new Color(0x8B84A0);
+    static final Color PINK = new Color(0xFFC8DD);
     static final Color PEACH = new Color(0xFFD6A5);
     static final Color LEMON = new Color(0xFDFFB6);
-    static final Color MINT  = new Color(0xCAFFBF);
-    static final Color AQUA  = new Color(0x9BF6FF);
-    static final Color SKY   = new Color(0xA0C4FF);
-    static final Color LAV   = new Color(0xBDB2FF);
-    static final Color GOOD  = new Color(0x8FE3AE);
-    static final Color BAD   = new Color(0xFF9DB5);
-    static final Color[] NAV_COLORS   = {PINK, PEACH, MINT, AQUA, LAV};
-    static final Color[] BADGE_COLORS = {PINK, AQUA, LAV, PEACH, MINT, SKY};
- 
-    
+    static final Color MINT = new Color(0xCAFFBF);
+    static final Color AQUA = new Color(0x9BF6FF);
+    static final Color SKY = new Color(0xA0C4FF);
+    static final Color LAV = new Color(0xBDB2FF);
+    static final Color GOOD = new Color(0x8FE3AE);
+    static final Color BAD = new Color(0xFF9DB5);
+    static final Color[] NAV_COLORS = { PINK, PEACH, MINT, AQUA, LAV };
+    static final Color[] BADGE_COLORS = { PINK, AQUA, LAV, PEACH, MINT, SKY };
+
     static final double FONT_SCALE = 1.25;
- 
+
     static Font font(int style, int size) {
         return new Font("SansSerif", style, (int) Math.round(size * FONT_SCALE));
     }
- 
-    
+
     static void applyDefaultFonts() {
         javax.swing.plaf.FontUIResource body = new javax.swing.plaf.FontUIResource(font(Font.PLAIN, 14));
         javax.swing.plaf.FontUIResource bold = new javax.swing.plaf.FontUIResource(font(Font.BOLD, 14));
-        for (String key : new String[]{"OptionPane.messageFont", "ComboBox.font", "Spinner.font",
+        for (String key : new String[] { "OptionPane.messageFont", "ComboBox.font", "Spinner.font",
                 "RadioButton.font", "TextField.font", "PasswordField.font", "ToolTip.font",
-                "TextArea.font", "Label.font"}) {
+                "TextArea.font", "Label.font" }) {
             UIManager.put(key, body);
         }
         UIManager.put("OptionPane.buttonFont", bold);
     }
- 
+
     static Color mix(Color a, Color b, double t) {
         return new Color((int) (a.getRed() + (b.getRed() - a.getRed()) * t),
                 (int) (a.getGreen() + (b.getGreen() - a.getGreen()) * t),
                 (int) (a.getBlue() + (b.getBlue() - a.getBlue()) * t));
     }
- 
+
     static Color badgeColor(int quizId) {
         return BADGE_COLORS[Math.floorMod(quizId - 1, BADGE_COLORS.length)];
     }
- 
+
     static boolean isPerfect(Result r) {
         return r.getTotalItems() > 0 && r.getScore() == r.getTotalItems();
     }
- 
-    
+
     static class RoundButton extends JButton {
         private Color base;
- 
+
         RoundButton(String text, Color base) {
             super(text);
             this.base = base;
@@ -85,12 +80,12 @@ public class QuizApp extends JFrame {
             setBorder(new EmptyBorder(10, 18, 10, 18));
             setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         }
- 
+
         void setBase(Color c) {
             base = c;
             repaint();
         }
- 
+
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
@@ -111,21 +106,20 @@ public class QuizApp extends JFrame {
             super.paintComponent(g);
         }
     }
- 
+
     static class Card extends JPanel {
         private final Color fill;
- 
+
         Card(Color fill) {
             this.fill = fill;
             setOpaque(false);
             setBorder(new EmptyBorder(16, 20, 16, 20));
         }
- 
+
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setColor(new Color(0xBDB2FF).brighter());
             g2.setColor(new Color(189, 178, 255, 60));
             g2.fill(new RoundRectangle2D.Double(0, 4, getWidth(), getHeight() - 4, 30, 30));
             g2.setColor(fill);
@@ -134,48 +128,47 @@ public class QuizApp extends JFrame {
             super.paintComponent(g);
         }
     }
- 
-    
+
     static class BgPanel extends JPanel {
         BgPanel() {
             setOpaque(true);
             setBackground(BG);
         }
- 
+
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            double[][] spots = {{0.06, 0.10, 90}, {0.94, 0.16, 70}, {0.88, 0.88, 120},
-                    {0.08, 0.90, 80}, {0.52, 0.04, 40}, {0.70, 0.55, 30}};
-            Color[] cols = {PINK, LAV, MINT, LEMON, AQUA, PEACH};
+            double[][] spots = { { 0.06, 0.10, 90 }, { 0.94, 0.16, 70 }, { 0.88, 0.88, 120 },
+                    { 0.08, 0.90, 80 }, { 0.52, 0.04, 40 }, { 0.70, 0.55, 30 } };
+            Color[] cols = { PINK, LAV, MINT, LEMON, AQUA, PEACH };
             for (int i = 0; i < spots.length; i++) {
                 Color c = cols[i];
                 g2.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 110));
                 double r = spots[i][2];
-                g2.fill(new Ellipse2D.Double(getWidth() * spots[i][0] - r, getHeight() * spots[i][1] - r, r * 2, r * 2));
+                g2.fill(new Ellipse2D.Double(getWidth() * spots[i][0] - r, getHeight() * spots[i][1] - r, r * 2,
+                        r * 2));
             }
             g2.dispose();
         }
     }
- 
-    
+
     static class Bar extends JComponent {
         private double value;
         private final Color color;
- 
+
         Bar(double value, Color color) {
             this.value = value;
             this.color = color;
             setPreferredSize(new Dimension(200, 18));
         }
- 
+
         void setValue(double v) {
             value = Math.max(0, Math.min(1, v));
             repaint();
         }
- 
+
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
@@ -191,20 +184,19 @@ public class QuizApp extends JFrame {
             g2.dispose();
         }
     }
- 
-    // The badge
+
     static class BadgeIcon extends JComponent {
         private final boolean earned;
         private final Color color;
         private final int size;
- 
+
         BadgeIcon(boolean earned, Color color, int size) {
             this.earned = earned;
             this.color = color;
             this.size = size;
             setPreferredSize(new Dimension(size, (int) (size * 1.15) + 2));
         }
- 
+
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
@@ -214,7 +206,7 @@ public class QuizApp extends JFrame {
             double cy = 0.40 * s;
             Color main = earned ? color : new Color(0xE6E3EE);
             Color dark = earned ? mix(color, INK, 0.25) : new Color(0xCBC7D6);
- 
+
             for (int side = -1; side <= 1; side += 2) {
                 double x0 = cx + side * 0.06 * s;
                 double x1 = cx + side * 0.30 * s;
@@ -232,7 +224,7 @@ public class QuizApp extends JFrame {
             circle(g2, cx, cy, 0.40 * s, dark);
             circle(g2, cx, cy, 0.35 * s, main);
             circle(g2, cx, cy, 0.27 * s, new Color(255, 255, 255, 175));
- 
+
             if (earned) {
                 star(g2, cx, cy, 0.21 * s, 0.09 * s, new Color(0xFFC94D));
                 g2.setColor(new Color(255, 255, 255, 220));
@@ -246,12 +238,12 @@ public class QuizApp extends JFrame {
             }
             g2.dispose();
         }
- 
+
         private static void circle(Graphics2D g2, double cx, double cy, double r, Color c) {
             g2.setColor(c);
             g2.fill(new Ellipse2D.Double(cx - r, cy - r, r * 2, r * 2));
         }
- 
+
         private static void star(Graphics2D g2, double cx, double cy, double big, double small, Color c) {
             Path2D p = new Path2D.Double();
             for (int i = 0; i < 10; i++) {
@@ -270,24 +262,22 @@ public class QuizApp extends JFrame {
             g2.fill(p);
         }
     }
- 
-    
+
     private final ArrayList<User> users;
     private final ArrayList<Quiz> quizzes;
     private final DataSave data;
-    private final ArrayList<Quiz> createdQuizzes = new ArrayList<>();   // quizzes made by the instructor
-    private JPanel content;                 // right side of the main screen
-    private javax.swing.Timer quizTimer;    // running quiz countdown (if any)
+    private final ArrayList<Quiz> createdQuizzes = new ArrayList<>();
+    private JPanel content;
+    private javax.swing.Timer quizTimer;
     private int loginAttempts = 0;
-    private final Map<String, BufferedImage> avatars = new HashMap<>();   // userId -> profile picture
-    private JComponent sideAvatar;                                         // avatar shown in the sidebar
- 
+    private final Map<String, BufferedImage> avatars = new HashMap<>();
+    private JComponent sideAvatar;
+
     public QuizApp(ArrayList<User> users, ArrayList<Quiz> quizzes, DataSave data) {
         super("Elif U Know - Python Quiz Adventure");
         applyDefaultFonts();
         this.users = users;
-        
-        this.quizzes = new ArrayList<>();
+        this.quizzes = quizzes; // Keep loaded quizzes
         this.data = data;
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1180, 780);
@@ -296,10 +286,10 @@ public class QuizApp extends JFrame {
         setIconImages(java.util.Arrays.asList(makeIcon(16), makeIcon(32), makeIcon(64), makeIcon(128)));
         showLogin();
     }
- 
-    
+
     private static java.awt.image.BufferedImage makeIcon(int px) {
-        java.awt.image.BufferedImage img = new java.awt.image.BufferedImage(px, px, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+        java.awt.image.BufferedImage img = new java.awt.image.BufferedImage(px, px,
+                java.awt.image.BufferedImage.TYPE_INT_ARGB);
         BadgeIcon badge = new BadgeIcon(true, PINK, (int) (px / 1.15));
         badge.setSize(px, px);
         Graphics2D g = img.createGraphics();
@@ -307,7 +297,7 @@ public class QuizApp extends JFrame {
         g.dispose();
         return img;
     }
- 
+
     private void setScreen(JComponent c) {
         stopQuizTimer();
         getRootPane().setDefaultButton(null);
@@ -316,7 +306,7 @@ public class QuizApp extends JFrame {
         getContentPane().revalidate();
         getContentPane().repaint();
     }
- 
+
     private void setContent(JComponent c) {
         stopQuizTimer();
         content.removeAll();
@@ -324,26 +314,25 @@ public class QuizApp extends JFrame {
         content.revalidate();
         content.repaint();
     }
- 
+
     private void stopQuizTimer() {
         if (quizTimer != null) {
             quizTimer.stop();
             quizTimer = null;
         }
     }
- 
-    
+
     static JLabel label(String text, int style, int size, Color color) {
         JLabel l = new JLabel(text);
         l.setFont(font(style, size));
         l.setForeground(color);
         return l;
     }
- 
+
     static JLabel label(String text, int style, int size) {
         return label(text, style, size, INK);
     }
- 
+
     static JPanel stack(JComponent... items) {
         JPanel p = new JPanel(new GridBagLayout());
         p.setOpaque(false);
@@ -359,7 +348,7 @@ public class QuizApp extends JFrame {
         }
         return p;
     }
- 
+
     static Card lines(Color fill, JComponent... items) {
         Card c = new Card(fill);
         c.setLayout(new GridLayout(0, 1, 0, 6));
@@ -368,27 +357,26 @@ public class QuizApp extends JFrame {
         }
         return c;
     }
- 
+
     static JTextField field() {
         JTextField f = new JTextField();
         styleField(f);
         return f;
     }
- 
+
     static void styleField(JTextField f) {
         f.setFont(font(Font.PLAIN, 15));
         f.setForeground(INK);
         f.setBorder(BorderFactoryHelper.pill());
     }
- 
+
     static class BorderFactoryHelper {
         static javax.swing.border.Border pill() {
             return javax.swing.BorderFactory.createCompoundBorder(
                     new LineBorder(LAV, 2, true), new EmptyBorder(7, 12, 7, 12));
         }
     }
- 
-    
+
     private JPanel page(String title, String subtitle, JComponent body) {
         JPanel p = new JPanel(new BorderLayout(0, 12));
         p.setOpaque(false);
@@ -411,7 +399,7 @@ public class QuizApp extends JFrame {
         p.add(sp, BorderLayout.CENTER);
         return p;
     }
- 
+
     private JComponent tableOf(String[] cols, List<Object[]> rows) {
         DefaultTableModel model = new DefaultTableModel(rows.toArray(new Object[0][]), cols) {
             @Override
@@ -429,7 +417,8 @@ public class QuizApp extends JFrame {
         t.setSelectionForeground(INK);
         t.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
-            public Component getTableCellRendererComponent(JTable tb, Object v, boolean sel, boolean foc, int r, int c) {
+            public Component getTableCellRendererComponent(JTable tb, Object v, boolean sel, boolean foc, int r,
+                    int c) {
                 super.getTableCellRendererComponent(tb, v, sel, foc, r, c);
                 setBorder(new EmptyBorder(0, 10, 0, 10));
                 if (!sel) {
@@ -441,7 +430,8 @@ public class QuizApp extends JFrame {
         });
         t.getTableHeader().setDefaultRenderer(new DefaultTableCellRenderer() {
             @Override
-            public Component getTableCellRendererComponent(JTable tb, Object v, boolean sel, boolean foc, int r, int c) {
+            public Component getTableCellRendererComponent(JTable tb, Object v, boolean sel, boolean foc, int r,
+                    int c) {
                 super.getTableCellRendererComponent(tb, v, sel, foc, r, c);
                 setOpaque(true);
                 setBackground(LAV);
@@ -458,17 +448,17 @@ public class QuizApp extends JFrame {
         p.add(t, BorderLayout.CENTER);
         return p;
     }
- 
-    
+
+    // UPDATED showLogin() with the "Sign Up / Register" button[cite: 6]
     private void showLogin() {
         BgPanel bg = new BgPanel();
         bg.setLayout(new GridBagLayout());
- 
+
         Card card = new Card(Color.WHITE);
         card.setBorder(new EmptyBorder(26, 34, 26, 34));
         card.setLayout(new BorderLayout(0, 18));
-        card.setPreferredSize(new Dimension(460, 560));
- 
+        card.setPreferredSize(new Dimension(460, 620)); // Adjusted height for extra button[cite: 6]
+
         JPanel header = new JPanel();
         header.setOpaque(false);
         header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
@@ -483,46 +473,170 @@ public class QuizApp extends JFrame {
         header.add(title);
         header.add(Box.createVerticalStrut(2));
         header.add(sub);
- 
+
         JLabel who = label("Who is logging in?", Font.BOLD, 18);
         who.setHorizontalAlignment(SwingConstants.CENTER);
- 
+
         RoundButton studentBtn = new RoundButton("I am a Student", MINT);
         RoundButton instructorBtn = new RoundButton("I am an Instructor", LAV);
+        RoundButton registerBtn = new RoundButton("Sign Up / Register", SKY); // NEW BUTTON[cite: 6]
         RoundButton exitBtn = new RoundButton("Exit", LEMON);
+
         studentBtn.setFont(font(Font.BOLD, 17));
         instructorBtn.setFont(font(Font.BOLD, 17));
+        registerBtn.setFont(font(Font.BOLD, 17)); // NEW BUTTON FONT[cite: 6]
+
         studentBtn.addActionListener(e -> showLogin("Student"));
         instructorBtn.addActionListener(e -> showLogin("Instructor"));
+        registerBtn.addActionListener(e -> showRegister()); // OPENS SIGN UP SCREEN[cite: 6]
         exitBtn.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "Thank you for using Elif U Know!");
             System.exit(0);
         });
- 
+
         JPanel choices = new JPanel(new GridLayout(0, 1, 0, 12));
         choices.setOpaque(false);
         choices.add(who);
         choices.add(studentBtn);
         choices.add(instructorBtn);
+        choices.add(registerBtn); // ADDED TO PANEL[cite: 6]
         choices.add(exitBtn);
- 
+
         card.add(header, BorderLayout.NORTH);
         card.add(choices, BorderLayout.CENTER);
         bg.add(card);
         setScreen(bg);
     }
- 
-    
+
+    // NEW showRegister() method for account registration[cite: 6]
+    private void showRegister() {
+        BgPanel bg = new BgPanel();
+        bg.setLayout(new GridBagLayout());
+
+        Card card = new Card(Color.WHITE);
+        card.setBorder(new EmptyBorder(26, 34, 26, 34));
+        card.setLayout(new BorderLayout(0, 10));
+        card.setPreferredSize(new Dimension(460, 680));
+
+        JPanel header = new JPanel();
+        header.setOpaque(false);
+        header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
+        BadgeIcon logo = new BadgeIcon(true, PINK, 64);
+        logo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel title = label("Elif U Know", Font.BOLD, 34);
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel sub = label("Create New Account", Font.BOLD, 16, SOFT);
+        sub.setAlignmentX(Component.CENTER_ALIGNMENT);
+        header.add(logo);
+        header.add(Box.createVerticalStrut(6));
+        header.add(title);
+        header.add(Box.createVerticalStrut(2));
+        header.add(sub);
+
+        JComboBox<String> roleCombo = new JComboBox<>(new String[] { "Student", "Instructor" });
+        JTextField nameField = field();
+        JTextField userField = field();
+        JPasswordField passField = new JPasswordField();
+        styleField(passField);
+        JTextField extra1Field = field();
+        JTextField extra2Field = field();
+
+        JLabel extra1Label = label("Student ID", Font.BOLD, 13, SOFT);
+        JLabel extra2Label = label("Section", Font.BOLD, 13, SOFT);
+        JLabel error = label(" ", Font.PLAIN, 13, new Color(0xD6406A));
+        error.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JPanel form = new JPanel(new GridLayout(0, 1, 0, 4));
+        form.setOpaque(false);
+        form.add(label("Role", Font.BOLD, 13, SOFT));
+        form.add(roleCombo);
+        form.add(label("Full Name", Font.BOLD, 13, SOFT));
+        form.add(nameField);
+        form.add(label("Username", Font.BOLD, 13, SOFT));
+        form.add(userField);
+        form.add(label("Password", Font.BOLD, 13, SOFT));
+        form.add(passField);
+        form.add(extra1Label);
+        form.add(extra1Field);
+        form.add(extra2Label);
+        form.add(extra2Field);
+        form.add(error);
+
+        roleCombo.addActionListener(e -> {
+            boolean isStudent = roleCombo.getSelectedItem().equals("Student");
+            extra1Label.setText(isStudent ? "Student ID" : "Department");
+            extra2Label.setVisible(isStudent);
+            extra2Field.setVisible(isStudent);
+            form.revalidate();
+            form.repaint();
+        });
+
+        RoundButton registerBtn = new RoundButton("Register Account", MINT);
+        RoundButton backBtn = new RoundButton("Back to Login", LEMON);
+        JPanel buttons = new JPanel(new GridLayout(0, 1, 0, 8));
+        buttons.setOpaque(false);
+        buttons.add(registerBtn);
+        buttons.add(backBtn);
+
+        registerBtn.addActionListener(e -> {
+            String role = (String) roleCombo.getSelectedItem();
+            String name = nameField.getText().trim();
+            String username = userField.getText().trim();
+            String password = new String(passField.getPassword()).trim();
+            String ex1 = extra1Field.getText().trim();
+            String ex2 = extra2Field.getText().trim();
+
+            if (name.isEmpty() || username.isEmpty() || password.isEmpty() || ex1.isEmpty()
+                    || (role.equals("Student") && ex2.isEmpty())) {
+                error.setText("Please fill in all required fields.");
+                return;
+            }
+
+            for (User u : users) {
+                if (u.getUsername().equalsIgnoreCase(username)) {
+                    error.setText("Username already taken.");
+                    return;
+                }
+            }
+
+            String userId = "U" + (users.size() + 1);
+            User newUser;
+            if (role.equals("Student")) {
+                newUser = new Student(userId, name, username, password, ex1, ex2);
+                for (User u : users) {
+                    if (u instanceof Instructor) {
+                        ((Instructor) u).addStudent((Student) newUser);
+                    }
+                }
+            } else {
+                newUser = new Instructor(userId, name, username, password, "I-" + (users.size() + 1), ex1);
+            }
+
+            users.add(newUser);
+            DataSave.saveUser("users.txt", newUser);
+
+            JOptionPane.showMessageDialog(this, "Account created successfully! You can now log in.");
+            showLogin();
+        });
+
+        backBtn.addActionListener(e -> showLogin());
+
+        card.add(header, BorderLayout.NORTH);
+        card.add(form, BorderLayout.CENTER);
+        card.add(buttons, BorderLayout.SOUTH);
+        bg.add(card);
+        setScreen(bg);
+    }
+
     private void showLogin(String chosenRole) {
         BgPanel bg = new BgPanel();
         bg.setLayout(new GridBagLayout());
- 
+
         Card card = new Card(Color.WHITE);
         card.setBorder(new EmptyBorder(26, 34, 26, 34));
         card.setLayout(new BorderLayout(0, 10));
         card.setPreferredSize(new Dimension(460, 640));
- 
-        
+
         JPanel header = new JPanel();
         header.setOpaque(false);
         header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
@@ -537,8 +651,7 @@ public class QuizApp extends JFrame {
         header.add(title);
         header.add(Box.createVerticalStrut(2));
         header.add(sub);
- 
-        // Form
+
         JTextField user = field();
         JPasswordField pass = new JPasswordField();
         styleField(pass);
@@ -551,26 +664,23 @@ public class QuizApp extends JFrame {
         form.add(label("Password", Font.BOLD, 13, SOFT));
         form.add(pass);
         form.add(error);
- 
-        // Buttons
+
         RoundButton login = new RoundButton("Login", PINK);
         RoundButton exit = new RoundButton("Back", LEMON);
         JPanel buttons = new JPanel(new GridLayout(0, 1, 0, 8));
         buttons.setOpaque(false);
         buttons.add(login);
         buttons.add(exit);
- 
+
         Runnable attempt = () -> {
             String u = user.getText().trim();
             String p = new String(pass.getPassword()).trim();
- 
-            
+
             if (u.isEmpty() || p.isEmpty()) {
                 error.setText("Please enter your username and password.");
                 return;
             }
- 
-           
+
             User found = null;
             for (User candidate : users) {
                 if (candidate.login(u, p)) {
@@ -578,7 +688,7 @@ public class QuizApp extends JFrame {
                     break;
                 }
             }
- 
+
             if (found == null) {
                 loginAttempts++;
                 if (loginAttempts >= 3) {
@@ -590,15 +700,13 @@ public class QuizApp extends JFrame {
                 pass.setText("");
                 return;
             }
- 
-            
+
             if (!found.getRole().equals(chosenRole)) {
                 error.setText("This is not a " + chosenRole + " account.");
                 pass.setText("");
                 return;
             }
- 
-            
+
             loginAttempts = 0;
             final User loggedIn = found;
             if (loggedIn instanceof Student) {
@@ -611,7 +719,7 @@ public class QuizApp extends JFrame {
         user.addActionListener(e -> pass.requestFocusInWindow());
         pass.addActionListener(e -> attempt.run());
         exit.addActionListener(e -> showLogin());
- 
+
         card.add(header, BorderLayout.NORTH);
         card.add(form, BorderLayout.CENTER);
         card.add(buttons, BorderLayout.SOUTH);
@@ -619,20 +727,19 @@ public class QuizApp extends JFrame {
         setScreen(bg);
         SwingUtilities.invokeLater(user::requestFocusInWindow);
     }
- 
-    
+
     private void showWelcome(User u, Runnable openMenu) {
         BgPanel bg = new BgPanel();
         bg.setLayout(new GridBagLayout());
- 
+
         boolean student = u instanceof Student;
         Color roleColor = student ? MINT : LAV;
- 
+
         Card card = new Card(Color.WHITE);
         card.setBorder(new EmptyBorder(28, 40, 28, 40));
         card.setLayout(new BorderLayout(0, 14));
         card.setPreferredSize(new Dimension(500, 480));
- 
+
         JPanel top = new JPanel();
         top.setOpaque(false);
         top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
@@ -643,21 +750,21 @@ public class QuizApp extends JFrame {
         top.add(icon);
         top.add(Box.createVerticalStrut(8));
         top.add(ok);
- 
+
         JLabel welcome = new JLabel("<html><div style='text-align:center;width:300px'>Welcome, "
                 + u.getName() + "</div></html>");
         welcome.setFont(font(Font.PLAIN, 17));
         welcome.setForeground(INK);
         welcome.setHorizontalAlignment(SwingConstants.CENTER);
- 
+
         JLabel roleTitle = label("Role identified", Font.PLAIN, 13, SOFT);
         roleTitle.setHorizontalAlignment(SwingConstants.CENTER);
         JLabel role = label(u.getRole(), Font.BOLD, 24);
         role.setHorizontalAlignment(SwingConstants.CENTER);
         Card roleCard = lines(roleColor, roleTitle, role);
- 
+
         JPanel mid = stack(welcome, roleCard);
- 
+
         RoundButton go = new RoundButton(student ? "Go to Student Menu" : "Go to Instructor Menu", PINK);
         go.addActionListener(e -> openMenu.run());
         RoundButton back = new RoundButton("Back to Login", LEMON);
@@ -666,7 +773,7 @@ public class QuizApp extends JFrame {
         buttons.setOpaque(false);
         buttons.add(go);
         buttons.add(back);
- 
+
         card.add(top, BorderLayout.NORTH);
         card.add(mid, BorderLayout.CENTER);
         card.add(buttons, BorderLayout.SOUTH);
@@ -674,19 +781,17 @@ public class QuizApp extends JFrame {
         setScreen(bg);
         getRootPane().setDefaultButton(go);
     }
- 
-    
+
     private static String initialOf(User u) {
         String n = u.getName();
         String first = n.contains(",") ? n.split(",")[1].trim() : n.replace("Ms. ", "").replace("Mr. ", "");
         return first.isEmpty() ? "?" : first.substring(0, 1).toUpperCase();
     }
- 
-    
+
     static final int PRESET_COUNT = 8;
     private final Map<Integer, BufferedImage> presets = new HashMap<>();
-    private final Map<String, Integer> picks = new HashMap<>();   // userId -> chosen avatar (0-5) or -1
- 
+    private final Map<String, Integer> picks = new HashMap<>();
+
     private int pickOf(User u) {
         if (!picks.containsKey(u.getUserId())) {
             int idx = -1;
@@ -702,13 +807,12 @@ public class QuizApp extends JFrame {
         }
         return picks.get(u.getUserId());
     }
- 
+
     private BufferedImage avatarOf(User u) {
         int idx = pickOf(u);
         return idx < 0 ? null : presetImage(idx);
     }
- 
-    
+
     private static List<File> avatarDirs() {
         List<File> dirs = new ArrayList<>();
         dirs.add(new File("avatars"));
@@ -720,21 +824,18 @@ public class QuizApp extends JFrame {
                 dirs.add(new File(base.getParentFile(), "avatars"));
             }
         } catch (Exception ex) {
-            
         }
         return dirs;
     }
- 
-    
+
     private BufferedImage presetImage(int i) {
         if (presets.containsKey(i)) {
             return presets.get(i);
         }
         BufferedImage img = null;
-        search:
-        for (File dir : avatarDirs()) {
-            for (String name : new String[]{"avatar" + (i + 1), "avatar" + (i + 1) + "_png"}) {
-                for (String ext : new String[]{".png", ".jpg", ".jpeg"}) {
+        search: for (File dir : avatarDirs()) {
+            for (String name : new String[] { "avatar" + (i + 1), "avatar" + (i + 1) + "_png" }) {
+                for (String ext : new String[] { ".png", ".jpg", ".jpeg" }) {
                     File f = new File(dir, name + ext);
                     if (f.exists()) {
                         try {
@@ -744,7 +845,6 @@ public class QuizApp extends JFrame {
                                 break search;
                             }
                         } catch (Exception ex) {
-                            
                         }
                     }
                 }
@@ -753,19 +853,18 @@ public class QuizApp extends JFrame {
         presets.put(i, img);
         return img;
     }
- 
-    
+
     private class AvatarView extends JComponent {
         private final User user;
         private final int d;
- 
+
         AvatarView(User user, int d) {
             this.user = user;
             this.d = d;
             setPreferredSize(new Dimension(d, d));
             setMaximumSize(new Dimension(d, d));
         }
- 
+
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
@@ -791,11 +890,11 @@ public class QuizApp extends JFrame {
             g2.dispose();
         }
     }
- 
+
     private static BufferedImage squareScale(BufferedImage src, int px) {
         int side = Math.min(src.getWidth(), src.getHeight());
         int x = (src.getWidth() - side) / 2;
-        int y = (int) ((src.getHeight() - side) * 0.15);   // keep the face: crop mostly from the top
+        int y = (int) ((src.getHeight() - side) * 0.15);
         BufferedImage out = new BufferedImage(px, px, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = out.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
@@ -803,7 +902,7 @@ public class QuizApp extends JFrame {
         g.dispose();
         return out;
     }
- 
+
     private void pickAvatar(User u, int idx) {
         picks.put(u.getUserId(), idx);
         try {
@@ -811,14 +910,13 @@ public class QuizApp extends JFrame {
             dir.mkdirs();
             java.nio.file.Files.write(new File(dir, u.getUserId() + ".txt").toPath(), String.valueOf(idx).getBytes());
         } catch (Exception ex) {
-            
         }
         if (sideAvatar != null) {
             sideAvatar.repaint();
         }
         setContent(profilePage(u));
     }
- 
+
     private void removePicture(User u) {
         new File("profile_pics", u.getUserId() + ".txt").delete();
         picks.put(u.getUserId(), -1);
@@ -827,12 +925,11 @@ public class QuizApp extends JFrame {
         }
         setContent(profilePage(u));
     }
- 
-    
+
     private class AvatarTile extends JComponent {
         private final User user;
         private final int idx;
- 
+
         AvatarTile(User user, int idx) {
             this.user = user;
             this.idx = idx;
@@ -846,7 +943,7 @@ public class QuizApp extends JFrame {
                 }
             });
         }
- 
+
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
@@ -865,17 +962,17 @@ public class QuizApp extends JFrame {
             g2.dispose();
         }
     }
- 
+
     private JComponent profilePage(User u) {
         Card card = new Card(Color.WHITE);
         card.setLayout(new BorderLayout(24, 0));
         card.setBorder(new EmptyBorder(24, 28, 24, 28));
- 
+
         JPanel left = new JPanel(new GridBagLayout());
         left.setOpaque(false);
         left.add(new AvatarView(u, 140));
         card.add(left, BorderLayout.WEST);
- 
+
         JPanel info = new JPanel(new GridLayout(0, 1, 0, 6));
         info.setOpaque(false);
         info.add(label(u.getName(), Font.BOLD, 22));
@@ -889,28 +986,27 @@ public class QuizApp extends JFrame {
             info.add(label("Department: " + ((Instructor) u).getDepartment(), Font.PLAIN, 15));
         }
         card.add(info, BorderLayout.CENTER);
- 
+
         if (u instanceof Student) {
             return page("My Profile", "Your account details and badge collection",
                     stack(card, label("My Badges", Font.BOLD, 22), badgesBody((Student) u)));
         }
         return page("My Profile", "Your account details", card);
     }
- 
-    
+
     private void shell(User u, String subtitle, Map<String, Runnable> nav, Runnable first) {
         BgPanel root = new BgPanel();
         root.setLayout(new BorderLayout(18, 0));
         root.setBorder(new EmptyBorder(20, 20, 20, 20));
- 
+
         Card side = new Card(Color.WHITE);
         side.setLayout(new BoxLayout(side, BoxLayout.Y_AXIS));
         side.setPreferredSize(new Dimension(320, 0));
- 
+
         AvatarView avatar = new AvatarView(u, 84);
         sideAvatar = avatar;
         avatar.setAlignmentX(Component.CENTER_ALIGNMENT);
- 
+
         JLabel name = new JLabel(u.getName(), SwingConstants.CENTER);
         name.setFont(font(Font.BOLD, 15));
         name.setForeground(INK);
@@ -920,14 +1016,14 @@ public class QuizApp extends JFrame {
         sub.setHorizontalAlignment(SwingConstants.CENTER);
         sub.setAlignmentX(Component.CENTER_ALIGNMENT);
         sub.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
- 
+
         side.add(avatar);
         side.add(Box.createVerticalStrut(8));
         side.add(name);
         side.add(Box.createVerticalStrut(2));
         side.add(sub);
         side.add(Box.createVerticalStrut(18));
- 
+
         int i = 0;
         for (Map.Entry<String, Runnable> e : nav.entrySet()) {
             RoundButton b = new RoundButton(e.getKey(), NAV_COLORS[i++ % NAV_COLORS.length]);
@@ -954,7 +1050,7 @@ public class QuizApp extends JFrame {
             showLogin();
         });
         side.add(logout);
- 
+
         content = new JPanel(new BorderLayout());
         content.setOpaque(false);
         root.add(side, BorderLayout.WEST);
@@ -962,8 +1058,7 @@ public class QuizApp extends JFrame {
         setScreen(root);
         first.run();
     }
- 
-    
+
     private void studentHome(Student s) {
         Map<String, Runnable> nav = new LinkedHashMap<>();
         nav.put("Home", () -> setContent(studentWelcome(s)));
@@ -973,7 +1068,7 @@ public class QuizApp extends JFrame {
         nav.put("Study Tips", () -> setContent(studyPage(s)));
         shell(s, "Section " + s.getSection(), nav, () -> setContent(studentWelcome(s)));
     }
- 
+
     private int badgeCount(Student s) {
         int n = 0;
         for (Quiz q : quizzes) {
@@ -983,29 +1078,29 @@ public class QuizApp extends JFrame {
         }
         return n;
     }
- 
+
     private JComponent studentWelcome(Student s) {
         String full = s.getName().contains(",") ? s.getName().split(",")[1].trim() : s.getName();
         String first = full.split(" ")[0];
- 
+
         double best = 0;
         for (Result r : s.getAttemptHistory()) {
             best = Math.max(best, r.getPercentage());
         }
- 
+
         Card hello = lines(PINK,
                 label("Hi, " + first + "!", Font.BOLD, 26),
                 label("Ready to learn some Python today? Get a perfect score to collect a badge!", Font.PLAIN, 15));
- 
+
         JPanel stats = new JPanel(new GridLayout(1, 3, 14, 0));
         stats.setOpaque(false);
         stats.add(statCard("Attempts", String.valueOf(s.getAttemptHistory().size()), MINT));
         stats.add(statCard("Best score", String.format("%.0f%%", best), LEMON));
         stats.add(statCard("Badges", badgeCount(s) + " / " + quizzes.size(), AQUA));
- 
+
         return page("Home", "Welcome back", stack(hello, stats));
     }
- 
+
     private Card statCard(String title, String value, Color color) {
         JLabel v = label(value, Font.BOLD, 30);
         v.setHorizontalAlignment(SwingConstants.CENTER);
@@ -1013,15 +1108,15 @@ public class QuizApp extends JFrame {
         t.setHorizontalAlignment(SwingConstants.CENTER);
         return lines(color, v, t);
     }
- 
+
     private JComponent takeQuizPage(Student s) {
         JPanel holder = new JPanel(new BorderLayout());
         holder.setOpaque(false);
- 
+
         JPanel chips = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         chips.setOpaque(false);
-        String[] levels = {"All", "Basic", "Average", "Advanced"};
-        Color[] colors = {LAV, MINT, PEACH, PINK};
+        String[] levels = { "All", "Basic", "Average", "Advanced" };
+        Color[] colors = { LAV, MINT, PEACH, PINK };
         for (int i = 0; i < levels.length; i++) {
             String level = levels[i];
             RoundButton b = new RoundButton(level, colors[i]);
@@ -1033,16 +1128,16 @@ public class QuizApp extends JFrame {
             });
             chips.add(b);
         }
- 
+
         holder.add(quizList(s, "All"), BorderLayout.NORTH);
- 
+
         JPanel body = new JPanel(new BorderLayout(0, 14));
         body.setOpaque(false);
         body.add(chips, BorderLayout.NORTH);
         body.add(holder, BorderLayout.CENTER);
         return page("Take a Quiz", "Pick All, or choose a difficulty, then pick a topic", body);
     }
- 
+
     private JComponent quizList(Student s, String level) {
         ArrayList<JComponent> cards = new ArrayList<>();
         for (Quiz q : quizzes) {
@@ -1053,7 +1148,7 @@ public class QuizApp extends JFrame {
             c.setLayout(new BorderLayout(16, 0));
             boolean has = s.getPerfectResult(q.getQuizId()) != null;
             c.add(new BadgeIcon(has, badgeColor(q.getQuizId()), 46), BorderLayout.WEST);
- 
+
             JPanel text = new JPanel(new GridLayout(0, 1, 0, 2));
             text.setOpaque(false);
             text.add(label(q.getTopic(), Font.BOLD, 17));
@@ -1062,7 +1157,7 @@ public class QuizApp extends JFrame {
             text.add(label(has ? "Badge collected!" : "Score 100% to earn this badge", Font.PLAIN, 13,
                     has ? new Color(0x3C9D68) : SOFT));
             c.add(text, BorderLayout.CENTER);
- 
+
             RoundButton start = new RoundButton("Start", MINT);
             start.addActionListener(e -> new QuizSession(s, q));
             JPanel east = new JPanel(new GridBagLayout());
@@ -1072,13 +1167,13 @@ public class QuizApp extends JFrame {
             cards.add(c);
         }
         if (cards.isEmpty()) {
-            cards.add(lines(LEMON, label(level.equals("All") ? "No quizzes yet. Your instructor has not uploaded any quiz."
-                    : "No quizzes available for this level yet.", Font.PLAIN, 15)));
+            cards.add(lines(LEMON,
+                    label(level.equals("All") ? "No quizzes yet. Your instructor has not uploaded any quiz."
+                            : "No quizzes available for this level yet.", Font.PLAIN, 15)));
         }
         return stack(cards.toArray(new JComponent[0]));
     }
- 
-    
+
     private class QuizSession {
         private final Student student;
         private final Quiz quiz;
@@ -1088,7 +1183,7 @@ public class QuizApp extends JFrame {
         private boolean locked = false;
         private final TimeQuiz tq;
         private final javax.swing.Timer timer;
- 
+
         private final JLabel progress = label("", Font.BOLD, 15, SOFT);
         private final JLabel timeLabel = label("", Font.BOLD, 18);
         private final Bar timeBar = new Bar(1, MINT);
@@ -1096,21 +1191,21 @@ public class QuizApp extends JFrame {
         private final RoundButton[] opts = new RoundButton[4];
         private final JLabel feedback = label(" ", Font.BOLD, 15);
         private final RoundButton next = new RoundButton("Next", PINK);
-        private final Color[] optColors = {PINK, PEACH, AQUA, LAV};
- 
+        private final Color[] optColors = { PINK, PEACH, AQUA, LAV };
+
         QuizSession(Student student, Quiz quiz) {
             this.student = student;
             this.quiz = quiz;
             this.total = quiz.getTotalQuestions();
             this.answers = new int[total];
             this.tq = new TimeQuiz(quiz.getTimeLimit());
- 
+
             JPanel top = new JPanel(new BorderLayout(14, 0));
             top.setOpaque(false);
             top.add(progress, BorderLayout.WEST);
             top.add(timeBar, BorderLayout.CENTER);
             top.add(timeLabel, BorderLayout.EAST);
- 
+
             questionText.setEditable(false);
             questionText.setOpaque(false);
             questionText.setLineWrap(true);
@@ -1120,7 +1215,7 @@ public class QuizApp extends JFrame {
             Card qCard = new Card(Color.WHITE);
             qCard.setLayout(new BorderLayout());
             qCard.add(questionText, BorderLayout.CENTER);
- 
+
             JPanel choices = new JPanel(new GridLayout(0, 1, 0, 10));
             choices.setOpaque(false);
             for (int i = 0; i < 4; i++) {
@@ -1131,7 +1226,7 @@ public class QuizApp extends JFrame {
                 opts[i].addActionListener(e -> choose(idx));
                 choices.add(opts[i]);
             }
- 
+
             next.addActionListener(e -> {
                 if (!locked) {
                     return;
@@ -1147,7 +1242,7 @@ public class QuizApp extends JFrame {
             bottom.setOpaque(false);
             bottom.add(feedback, BorderLayout.CENTER);
             bottom.add(next, BorderLayout.EAST);
- 
+
             Card head = lines(LAV, label(quiz.getTopic() + "  (" + quiz.getDifficultyLevel() + ")", Font.BOLD, 18));
             JPanel main = new JPanel(new BorderLayout(0, 14));
             main.setOpaque(false);
@@ -1155,7 +1250,7 @@ public class QuizApp extends JFrame {
             main.add(north, BorderLayout.NORTH);
             main.add(choices, BorderLayout.CENTER);
             main.add(bottom, BorderLayout.SOUTH);
- 
+
             setContent(main);
             tq.startTimer();
             showQuestion();
@@ -1164,7 +1259,7 @@ public class QuizApp extends JFrame {
             quizTimer = timer;
             timer.start();
         }
- 
+
         private void tick() {
             int left = tq.getRemainingTime();
             timeLabel.setText(String.format("%d:%02d", left / 60, left % 60));
@@ -1175,7 +1270,7 @@ public class QuizApp extends JFrame {
                 finish();
             }
         }
- 
+
         private void showQuestion() {
             Question q = quiz.getQuestion(cur);
             progress.setText("Question " + (cur + 1) + " of " + total);
@@ -1190,7 +1285,7 @@ public class QuizApp extends JFrame {
             next.setText(cur == total - 1 ? "Finish" : "Next");
             next.setEnabled(false);
         }
- 
+
         private void choose(int i) {
             if (locked) {
                 return;
@@ -1217,7 +1312,7 @@ public class QuizApp extends JFrame {
             }
             next.setEnabled(true);
         }
- 
+
         private void finish() {
             timer.stop();
             tq.stopTimer();
@@ -1228,7 +1323,7 @@ public class QuizApp extends JFrame {
             showResult(student, quiz, r, prev, newBadge);
         }
     }
- 
+
     private Result latestFor(Student s, int quizId) {
         ArrayList<Result> h = s.getAttemptHistory();
         for (int i = h.size() - 1; i >= 0; i--) {
@@ -1238,7 +1333,7 @@ public class QuizApp extends JFrame {
         }
         return null;
     }
- 
+
     private void showResult(Student s, Quiz quiz, Result r, Result prev, boolean newBadge) {
         double pct = r.getPercentage();
         String feedback;
@@ -1253,7 +1348,7 @@ public class QuizApp extends JFrame {
             feedback = "You need more practice on " + quiz.getTopic() + ".";
             fill = PINK;
         }
- 
+
         JLabel title = label("Quiz Finished!", Font.BOLD, 26);
         title.setHorizontalAlignment(SwingConstants.CENTER);
         JLabel score = label(r.getScore() + " / " + r.getTotalItems(), Font.BOLD, 54);
@@ -1262,16 +1357,16 @@ public class QuizApp extends JFrame {
         percent.setHorizontalAlignment(SwingConstants.CENTER);
         JLabel fb = label(feedback, Font.BOLD, 16);
         fb.setHorizontalAlignment(SwingConstants.CENTER);
- 
+
         ArrayList<JComponent> items = new ArrayList<>();
         items.add(lines(fill, title, score, percent, fb));
- 
+
         if (prev != null) {
             JLabel cmp = label("Compared to your last attempt: " + r.compareAttempts(prev), Font.PLAIN, 15);
             cmp.setHorizontalAlignment(SwingConstants.CENTER);
             items.add(lines(Color.WHITE, cmp));
         }
- 
+
         if (isPerfect(r)) {
             Card bc = new Card(LEMON);
             bc.setLayout(new BorderLayout(0, 6));
@@ -1287,7 +1382,7 @@ public class QuizApp extends JFrame {
             bc.add(tx, BorderLayout.SOUTH);
             items.add(bc);
         }
- 
+
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 0));
         buttons.setOpaque(false);
         RoundButton retake = new RoundButton("Retake Quiz", MINT);
@@ -1300,14 +1395,14 @@ public class QuizApp extends JFrame {
         buttons.add(more);
         buttons.add(badges);
         items.add(buttons);
- 
+
         setContent(page("Results", null, stack(items.toArray(new JComponent[0]))));
- 
+
         if (newBadge) {
             SwingUtilities.invokeLater(() -> showBadgeDialog(quiz));
         }
     }
- 
+
     private void showBadgeDialog(Quiz quiz) {
         JPanel p = new JPanel(new BorderLayout(0, 8));
         p.setBackground(Color.WHITE);
@@ -1324,7 +1419,7 @@ public class QuizApp extends JFrame {
         p.add(new BadgeIcon(true, badgeColor(quiz.getQuizId()), 120), BorderLayout.CENTER);
         JOptionPane.showMessageDialog(this, p, "Badge Unlocked!", JOptionPane.PLAIN_MESSAGE);
     }
- 
+
     private JComponent latestResultPage(Student s) {
         if (s.getAttemptHistory().isEmpty()) {
             return page("Latest Result", null,
@@ -1338,7 +1433,7 @@ public class QuizApp extends JFrame {
                 label("Attempt #" + r.getAttemptNumber() + "  |  " + r.getDateTaken(), Font.PLAIN, 14, SOFT));
         return page("Latest Result", "Your most recent attempt", c);
     }
- 
+
     private JComponent historyPage(Student s) {
         if (s.getAttemptHistory().isEmpty()) {
             return page("Attempt History", null,
@@ -1346,19 +1441,19 @@ public class QuizApp extends JFrame {
         }
         List<Object[]> rows = new ArrayList<>();
         for (Result r : s.getAttemptHistory()) {
-            rows.add(new Object[]{r.getDateTaken(), r.getTopic(), r.getDifficulty(), "#" + r.getAttemptNumber(),
-                    r.getScore() + "/" + r.getTotalItems(), String.format("%.0f%%", r.getPercentage())});
+            rows.add(new Object[] { r.getDateTaken(), r.getTopic(), r.getDifficulty(), "#" + r.getAttemptNumber(),
+                    r.getScore() + "/" + r.getTotalItems(), String.format("%.0f%%", r.getPercentage()) });
         }
         return page("Attempt History", "Every quiz you have taken",
-                tableOf(new String[]{"Date", "Topic", "Difficulty", "Attempt", "Score", "Percent"}, rows));
+                tableOf(new String[] { "Date", "Topic", "Difficulty", "Attempt", "Score", "Percent" }, rows));
     }
- 
+
     private JComponent studyPage(Student s) {
         if (s.getAttemptHistory().isEmpty()) {
             return page("Study Tips", null,
                     lines(LEMON, label("Take a quiz first so we can give you suggestions.", Font.PLAIN, 15)));
         }
-        
+
         LinkedHashSet<Integer> seen = new LinkedHashSet<>();
         ArrayList<JComponent> items = new ArrayList<>();
         ArrayList<Result> h = s.getAttemptHistory();
@@ -1381,8 +1476,7 @@ public class QuizApp extends JFrame {
         }
         return page("Study Tips", "Topics to practice", stack(items.toArray(new JComponent[0])));
     }
- 
-    
+
     private JComponent badgesBody(Student s) {
         int have = badgeCount(s);
         int all = quizzes.size();
@@ -1390,14 +1484,15 @@ public class QuizApp extends JFrame {
             return lines(LEMON, label("No badges to collect yet.", Font.BOLD, 17),
                     label("Badges appear here once your instructor uploads a quiz.", Font.PLAIN, 14));
         }
- 
+
         JLabel count = label(have + " of " + all + " badges collected", Font.BOLD, 18);
         Bar bar = new Bar(all == 0 ? 0 : (double) have / all, GOOD);
         bar.setPreferredSize(new Dimension(200, 16));
         Card summary = lines(LAV, count,
                 label(have == all && all > 0 ? "You collected them all! Amazing!"
-                        : "Get a perfect score on a quiz to earn its badge.", Font.PLAIN, 14), bar);
- 
+                        : "Get a perfect score on a quiz to earn its badge.", Font.PLAIN, 14),
+                bar);
+
         JPanel grid = new JPanel(new GridLayout(0, 3, 14, 14));
         grid.setOpaque(false);
         for (Quiz q : quizzes) {
@@ -1406,8 +1501,9 @@ public class QuizApp extends JFrame {
             Card c = new Card(earned ? mix(badgeColor(q.getQuizId()), Color.WHITE, 0.6) : Color.WHITE);
             c.setLayout(new BorderLayout(0, 6));
             c.add(new BadgeIcon(earned, badgeColor(q.getQuizId()), 92), BorderLayout.CENTER);
- 
-            JLabel topic = new JLabel("<html><div style='text-align:center;width:150px'>" + q.getTopic() + "</div></html>");
+
+            JLabel topic = new JLabel(
+                    "<html><div style='text-align:center;width:150px'>" + q.getTopic() + "</div></html>");
             topic.setFont(font(Font.BOLD, 14));
             topic.setForeground(INK);
             topic.setHorizontalAlignment(SwingConstants.CENTER);
@@ -1421,7 +1517,6 @@ public class QuizApp extends JFrame {
             c.add(tx, BorderLayout.SOUTH);
             grid.add(c);
         }
-        // pad the last row so cards keep the same width
         while (grid.getComponentCount() % 3 != 0) {
             JPanel filler = new JPanel();
             filler.setOpaque(false);
@@ -1429,8 +1524,7 @@ public class QuizApp extends JFrame {
         }
         return stack(summary, grid);
     }
- 
-   
+
     private void instructorHome(Instructor ins) {
         Map<String, Runnable> nav = new LinkedHashMap<>();
         nav.put("Student Scores", () -> setContent(scoresPage(ins)));
@@ -1440,26 +1534,26 @@ public class QuizApp extends JFrame {
         nav.put("Problem Sets", () -> setContent(problemSetsPage(ins)));
         shell(ins, ins.getDepartment(), nav, () -> setContent(scoresPage(ins)));
     }
- 
+
     private JComponent scoresPage(Instructor ins) {
         List<Object[]> rows = new ArrayList<>();
         for (Student st : ins.getStudents()) {
             boolean any = false;
             for (Result r : data.getResults()) {
                 if (r.getStudentId().equals(st.getStudentId())) {
-                    rows.add(new Object[]{st.getName(), r.getTopic(), r.getDifficulty(), "#" + r.getAttemptNumber(),
-                            r.getScore() + "/" + r.getTotalItems(), String.format("%.0f%%", r.getPercentage())});
+                    rows.add(new Object[] { st.getName(), r.getTopic(), r.getDifficulty(), "#" + r.getAttemptNumber(),
+                            r.getScore() + "/" + r.getTotalItems(), String.format("%.0f%%", r.getPercentage()) });
                     any = true;
                 }
             }
             if (!any) {
-                rows.add(new Object[]{st.getName(), "No attempts yet", "", "", "", ""});
+                rows.add(new Object[] { st.getName(), "No attempts yet", "", "", "", "" });
             }
         }
         return page("Student Scores", "Every attempt by your students",
-                tableOf(new String[]{"Student", "Topic", "Difficulty", "Attempt", "Score", "Percent"}, rows));
+                tableOf(new String[] { "Student", "Topic", "Difficulty", "Attempt", "Score", "Percent" }, rows));
     }
- 
+
     private double[] averageFor(Quiz q) {
         double total = 0;
         int count = 0;
@@ -1469,9 +1563,9 @@ public class QuizApp extends JFrame {
                 count++;
             }
         }
-        return new double[]{count == 0 ? 0 : total / count, count, total};
+        return new double[] { count == 0 ? 0 : total / count, count, total };
     }
- 
+
     private JComponent performancePage() {
         ArrayList<JComponent> items = new ArrayList<>();
         double overallTotal = 0;
@@ -1500,7 +1594,7 @@ public class QuizApp extends JFrame {
         }
         return page("Class Performance", "Average score per quiz", stack(items.toArray(new JComponent[0])));
     }
- 
+
     private JComponent difficultiesPage() {
         ArrayList<JComponent> items = new ArrayList<>();
         for (Quiz q : quizzes) {
@@ -1515,8 +1609,7 @@ public class QuizApp extends JFrame {
         }
         return page("Common Difficulties", "Topics with an average below 60%", stack(items.toArray(new JComponent[0])));
     }
- 
-    
+
     private int nextQuizId() {
         int max = 0;
         for (Quiz q : quizzes) {
@@ -1527,27 +1620,26 @@ public class QuizApp extends JFrame {
         }
         return max + 1;
     }
- 
+
     private static String esc(String t) {
         return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
     }
- 
-    
+
     private JComponent problemSetPage(Instructor ins, Quiz quiz) {
         int n = quiz.getTotalQuestions();
         ArrayList<JComponent> items = new ArrayList<>();
- 
-        
+
         StringBuilder key = new StringBuilder();
         for (int i = 0; i < n; i++) {
-            key.append(i + 1).append("-").append((char) ('A' + quiz.getQuestion(i).getCorrectAnswer() - 1)).append("     ");
+            key.append(i + 1).append("-").append((char) ('A' + quiz.getQuestion(i).getCorrectAnswer() - 1))
+                    .append("     ");
         }
         items.add(lines(LAV,
                 label(quiz.getTopic(), Font.BOLD, 22),
                 label(quiz.getDifficultyLevel() + "  |  " + n + " items  |  " + quiz.getTimeLimit() + " seconds",
                         Font.PLAIN, 14),
                 label("Answer key:   " + key.toString().trim(), Font.BOLD, 15)));
- 
+
         for (int i = 0; i < n; i++) {
             Question q = quiz.getQuestion(i);
             Card c = new Card(Color.WHITE);
@@ -1557,7 +1649,7 @@ public class QuizApp extends JFrame {
             qt.setFont(font(Font.BOLD, 16));
             qt.setForeground(INK);
             c.add(qt);
- 
+
             String[] ch = q.getChoices();
             for (int k = 0; k < ch.length; k++) {
                 boolean right = (k + 1) == q.getCorrectAnswer();
@@ -1578,7 +1670,7 @@ public class QuizApp extends JFrame {
             }
             items.add(c);
         }
- 
+
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 0));
         buttons.setOpaque(false);
         RoundButton another = new RoundButton("Create Another Quiz", MINT);
@@ -1588,11 +1680,10 @@ public class QuizApp extends JFrame {
         buttons.add(another);
         buttons.add(all);
         items.add(buttons);
- 
+
         return page("Problem Set", "Questions with the answer key", stack(items.toArray(new JComponent[0])));
     }
- 
-    
+
     private JComponent problemSetsPage(Instructor ins) {
         ArrayList<JComponent> items = new ArrayList<>();
         for (Quiz q : createdQuizzes) {
@@ -1627,13 +1718,12 @@ public class QuizApp extends JFrame {
         return page("Problem Sets", "Quizzes you created for your students",
                 stack(items.toArray(new JComponent[0])));
     }
- 
-    
+
     private static class QForm {
         final JTextField text = field();
         final JTextField[] choices = new JTextField[4];
         final JRadioButton[] correct = new JRadioButton[4];
- 
+
         Card build(int number) {
             Card c = new Card(Color.WHITE);
             c.setLayout(new GridLayout(0, 1, 0, 6));
@@ -1657,10 +1747,10 @@ public class QuizApp extends JFrame {
             return c;
         }
     }
- 
+
     private JComponent createQuizPage(Instructor ins) {
         JTextField topic = field();
-        JComboBox<String> diff = new JComboBox<>(new String[]{"Basic", "Average", "Advanced"});
+        JComboBox<String> diff = new JComboBox<>(new String[] { "Basic", "Average", "Advanced" });
         JSpinner time = new JSpinner(new SpinnerNumberModel(60, 10, 3600, 10));
         JSpinner num = new JSpinner(new SpinnerNumberModel(3, 1, 10, 1));
         JPanel qHolder = new JPanel(new BorderLayout());
@@ -1669,7 +1759,7 @@ public class QuizApp extends JFrame {
         RoundButton setup = new RoundButton("Set up questions", MINT);
         RoundButton save = new RoundButton("Save quiz", PINK);
         save.setVisible(false);
- 
+
         Card details = new Card(LAV);
         details.setLayout(new GridLayout(0, 2, 12, 8));
         details.add(label("Topic", Font.BOLD, 14));
@@ -1680,7 +1770,7 @@ public class QuizApp extends JFrame {
         details.add(time);
         details.add(label("Number of questions (1-10)", Font.BOLD, 14));
         details.add(num);
- 
+
         setup.addActionListener(e -> {
             forms.clear();
             ArrayList<JComponent> cards = new ArrayList<>();
@@ -1696,7 +1786,7 @@ public class QuizApp extends JFrame {
             qHolder.repaint();
             save.setVisible(true);
         });
- 
+
         save.addActionListener(e -> {
             if (topic.getText().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please enter a topic.");
@@ -1730,7 +1820,7 @@ public class QuizApp extends JFrame {
             JOptionPane.showMessageDialog(this, "Quiz \"" + quiz.getTopic() + "\" was created successfully!");
             setContent(problemSetPage(ins, quiz));
         });
- 
+
         JPanel btns = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         btns.setOpaque(false);
         btns.add(setup);
@@ -1738,8 +1828,3 @@ public class QuizApp extends JFrame {
         return page("Create a Quiz", "Students will see it right away", stack(details, btns, qHolder));
     }
 }
- 
-
-
-
-

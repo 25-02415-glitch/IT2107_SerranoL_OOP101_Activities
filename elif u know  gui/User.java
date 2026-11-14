@@ -1,15 +1,14 @@
 import java.util.ArrayList;
 import java.util.Scanner;
- 
 
 public abstract class User {
-    
+
     private final String userId;
     private final String name;
     private final String username;
     private final String password;
     private final String role;
- 
+
     public User(String userId, String name, String username, String password, String role) {
         this.userId = userId;
         this.name = name;
@@ -17,36 +16,38 @@ public abstract class User {
         this.password = password;
         this.role = role;
     }
- 
-    
+
     public boolean login(String inputUsername, String inputPassword) {
         return username.equals(inputUsername) && password.equals(inputPassword);
     }
- 
+
     public void logout() {
         System.out.println("Goodbye, " + name + "! You have been logged out.");
     }
- 
+
     public String getRole() {
         return role;
     }
- 
+
     public String getUserId() {
         return userId;
     }
- 
+
     public String getName() {
         return name;
     }
- 
+
     public String getUsername() {
         return username;
     }
- 
-    
+
+    // ADDED: Password getter method required for saving user data
+    public String getPassword() {
+        return password;
+    }
+
     public abstract void displayMenu(Scanner input, ArrayList<Quiz> quizzes, DataSave data);
- 
-    
+
     public static int readNumber(Scanner input, String prompt, int min, int max) {
         while (true) {
             System.out.print(prompt);

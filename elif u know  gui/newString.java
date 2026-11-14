@@ -1,0 +1,6 @@
+/**
+ * newString
+ */
+public class newString {
+
+}

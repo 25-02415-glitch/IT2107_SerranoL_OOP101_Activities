@@ -1,0 +1,5 @@
+Student|U1|Cueto, Kathleen Alexa A.|cueto|pass123|25-00238|2107
+Student|U2|Noche, Daniella D.|noche|pass123|25-00958|2107
+Student|U3|Serrano, Lovely P.|serrano|pass123|25-02415|2107
+Instructor|U4|Ms. Fatima Marie P. Agdon|Ms.agdon|admin123|I-001|Information Technology
+Student|U5|jankart omega|jankartuwu|1122|1234|12345
