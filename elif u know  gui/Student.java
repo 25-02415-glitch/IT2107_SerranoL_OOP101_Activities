@@ -1,32 +1,31 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
- 
+
 public class Student extends User {
     private final String studentId;
     private final String section;
     private final ArrayList<Result> attemptHistory = new ArrayList<>();
- 
+
     public Student(String userId, String name, String username, String password,
-                   String studentId, String section) {
+            String studentId, String section) {
         super(userId, name, username, password, "Student");
         this.studentId = studentId;
         this.section = section;
     }
- 
+
     public String getStudentId() {
         return studentId;
     }
- 
+
     public String getSection() {
         return section;
     }
- 
+
     public ArrayList<Result> getAttemptHistory() {
         return attemptHistory;
     }
- 
-    
+
     public Result getPerfectResult(int quizId) {
         for (Result r : attemptHistory) {
             if (r.getQuizId() == quizId && r.getTotalItems() > 0 && r.getScore() == r.getTotalItems()) {
@@ -35,8 +34,7 @@ public class Student extends User {
         }
         return null;
     }
- 
-    
+
     public Result recordAttempt(Quiz quiz, int[] answers, DataSave data) {
         int total = quiz.getTotalQuestions();
         int score = quiz.computeScore(answers);
@@ -54,27 +52,25 @@ public class Student extends User {
         data.saveData();
         return result;
     }
- 
+
     public void addToHistory(Result result) {
         attemptHistory.add(result);
     }
- 
-    
+
     public Quiz selectDifficulty(Scanner input, ArrayList<Quiz> quizzes) {
         System.out.println("\nChoose difficulty:");
         System.out.println("  1. Basic");
         System.out.println("  2. Average");
         System.out.println("  3. Advanced");
         int choice = readNumber(input, "Enter choice: ", 1, 3);
- 
+
         String level = "Basic";
         if (choice == 2) {
             level = "Average";
         } else if (choice == 3) {
             level = "Advanced";
         }
- 
-        
+
         ArrayList<Quiz> available = new ArrayList<>();
         System.out.println("\nAvailable " + level + " quizzes:");
         for (Quiz q : quizzes) {
@@ -84,62 +80,61 @@ public class Student extends User {
                         + " (" + q.getTotalQuestions() + " items, " + q.getTimeLimit() + " seconds)");
             }
         }
- 
+
         if (available.isEmpty()) {
             System.out.println("  No quizzes available for this level yet.");
             return null;
         }
- 
+
         int pick = readNumber(input, "Choose a topic number: ", 1, available.size());
         return available.get(pick - 1);
     }
- 
+
     public void takeQuiz(Quiz quiz, Scanner input, DataSave data) {
         System.out.println("\n=== " + quiz.getTopic() + " (" + quiz.getDifficultyLevel() + ") ===");
         System.out.println("Time limit: " + quiz.getTimeLimit() + " seconds");
         System.out.println("Type the number of your answer.");
- 
+
         int total = quiz.getTotalQuestions();
-        int[] answers = new int[total];   
- 
+        int[] answers = new int[total];
+
         TimeQuiz timer = new TimeQuiz(quiz.getTimeLimit());
         timer.startTimer();
- 
+
         for (int i = 0; i < total; i++) {
             quiz.displayQuestion(i);
             answers[i] = readNumber(input, "Your answer (1-4): ", 1, 4);
- 
+
             if (quiz.checkAnswer(i, answers[i])) {
                 System.out.println("Correct!");
             } else {
-                System.out.println("Wrong. The correct answer is: " + quiz.getCorrectAnswerText(i));
+                System.out.println("Sorry but wrong!");
             }
- 
+
             if (timer.checkTimeLimit()) {
                 System.out.println("\nTime is up! The quiz has ended.");
                 break;
             }
         }
         timer.stopTimer();
- 
+
         int score = quiz.computeScore(answers);
- 
-        
+
         int attemptNumber = 1;
         for (Result r : attemptHistory) {
             if (r.getQuizId() == quiz.getQuizId()) {
                 attemptNumber++;
             }
         }
- 
+
         int newId = data.getResults().size() + 1;
         Result result = new Result(newId, studentId, quiz.getQuizId(), quiz.getTopic(),
                 quiz.getDifficultyLevel(), score, total, attemptNumber, LocalDate.now().toString());
- 
+
         attemptHistory.add(result);
         data.addResult(result);
         data.saveData();
- 
+
         System.out.println("\n--- Quiz Finished ---");
         System.out.println("Score: " + score + "/" + total
                 + " (" + String.format("%.0f", result.getPercentage()) + "%)");
@@ -150,8 +145,7 @@ public class Student extends User {
         } else {
             System.out.println("Feedback: You need more practice on " + quiz.getTopic() + ".");
         }
- 
-        
+
         if (attemptNumber > 1) {
             for (int i = attemptHistory.size() - 2; i >= 0; i--) {
                 Result old = attemptHistory.get(i);
@@ -162,12 +156,12 @@ public class Student extends User {
             }
         }
     }
- 
+
     public void retakeQuiz(Quiz quiz, Scanner input, DataSave data) {
         System.out.println("\nRetaking the quiz...");
         takeQuiz(quiz, input, data);
     }
- 
+
     public void viewResults() {
         if (attemptHistory.isEmpty()) {
             System.out.println("\nYou have no quiz results yet.");
@@ -179,7 +173,7 @@ public class Student extends User {
                 + last.getScore() + "/" + last.getTotalItems()
                 + " (" + String.format("%.0f", last.getPercentage()) + "%)");
     }
- 
+
     public void viewAttemptHistory() {
         if (attemptHistory.isEmpty()) {
             System.out.println("\nYou have no attempts yet.");
@@ -193,7 +187,7 @@ public class Student extends User {
                     + " (" + String.format("%.0f", r.getPercentage()) + "%)");
         }
     }
- 
+
     public void getStudyRecommendation() {
         System.out.println("\n--- Study Recommendation ---");
         if (attemptHistory.isEmpty()) {
@@ -213,7 +207,7 @@ public class Student extends User {
             System.out.println("You are doing great! Try a higher difficulty level.");
         }
     }
- 
+
     @Override
     public void displayMenu(Scanner input, ArrayList<Quiz> quizzes, DataSave data) {
         boolean running = true;
@@ -226,7 +220,7 @@ public class Student extends User {
             System.out.println("4. Study recommendation");
             System.out.println("5. Logout");
             int choice = readNumber(input, "Enter choice: ", 1, 5);
- 
+
             switch (choice) {
                 case 1 -> {
                     Quiz quiz = selectDifficulty(input, quizzes);

@@ -449,7 +449,6 @@ public class QuizApp extends JFrame {
         return p;
     }
 
-    // UPDATED showLogin() with the "Sign Up / Register" button[cite: 6]
     private void showLogin() {
         BgPanel bg = new BgPanel();
         bg.setLayout(new GridBagLayout());
@@ -457,7 +456,7 @@ public class QuizApp extends JFrame {
         Card card = new Card(Color.WHITE);
         card.setBorder(new EmptyBorder(26, 34, 26, 34));
         card.setLayout(new BorderLayout(0, 18));
-        card.setPreferredSize(new Dimension(460, 620)); // Adjusted height for extra button[cite: 6]
+        card.setPreferredSize(new Dimension(460, 620));
 
         JPanel header = new JPanel();
         header.setOpaque(false);
@@ -508,7 +507,6 @@ public class QuizApp extends JFrame {
         setScreen(bg);
     }
 
-    // NEW showRegister() method for account registration[cite: 6]
     private void showRegister() {
         BgPanel bg = new BgPanel();
         bg.setLayout(new GridBagLayout());
@@ -1307,7 +1305,7 @@ public class QuizApp extends JFrame {
                 feedback.setText("Correct! Nice one!");
                 feedback.setForeground(new Color(0x2E8B57));
             } else {
-                feedback.setText("Not quite. The answer is: " + q.getCorrectAnswerText());
+                feedback.setText("Not quite");
                 feedback.setForeground(new Color(0xD6406A));
             }
             next.setEnabled(true);
